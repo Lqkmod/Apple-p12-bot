@@ -844,8 +844,8 @@ def supersms(message):
 
     count = int(count)
 
-    if count > 100:
-        bot.reply_to(message, "📞 /spam sdt số_lần tối đa là 30 - 100, đợi 50 giây để sử dụng lại.")
+    if count > 60:
+        bot.reply_to(message, "📞 /spam sdt số_lần tối đa là 30 - 60, đợi 50 giây để sử dụng lại.")
         return
 
     if sdt in blacklist:
