@@ -641,7 +641,7 @@ def send_welcome(message):
         "│» 💎 /spamvip : Spam SMS VIP - Mua Vip 30k/Tháng\n"
         "│» 🆔 /id : Lấy ID Tele Của Bản Thân\n"
         "│» 🔊 /voice : Đổi Văn Bản Thành Giọng Nói\n"
-				"│» 🤖 /gpt Trò Chuyển Với GPT
+				"│» 🤖 /gpt Trò Chuyển Với GPT\n"
         "│» 🎁 /qr : Tạo QR\n"
         "│» 😶 /face : Lấy ảnh mặt random\n"
         "│» 🎵 /tiktok : Check Thông Tin - Tải Video Tiktok\n"
