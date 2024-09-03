@@ -583,46 +583,7 @@ def bot_on(message):
         bot.reply_to(message, 'Bot đã được bật.')
     else:
         bot.reply_to(message, 'Bạn không có quyền thực hiện thao tác này.')
-@bot.message_handler(commands=['code'])
-def handle_code_command(message):
-    # Tách lệnh và URL từ tin nhắn
-    command_args = message.text.split(maxsplit=1)
-
-    # Kiểm tra xem URL có được cung cấp không
-    if len(command_args) < 2:
-        bot.reply_to(message, "Vui lòng cung cấp url sau lệnh /code. Ví dụ: /code https://xnxx.com")
-        return
-
-    url = command_args[1]
-    domain = urlparse(url).netloc
-    file_name = f"{domain}.txt"
-    
-    try:
-        # Lấy nội dung HTML từ URL
-        response = requests.get(url)
-        response.raise_for_status()  # Xảy ra lỗi nếu có lỗi HTTP
-
-        # Lưu nội dung HTML vào file
-        with open(file_name, 'w', encoding='utf-8') as file:
-            file.write(response.text)
-
-        # Gửi file về người dùng
-        with open(file_name, 'rb') as file:
-            bot.send_document(message.chat.id, file, caption=f"HTML của trang web {url}")
-
-        # Phản hồi tin nhắn gốc
-        bot.reply_to(message, "Đã gửi mã nguồn HTML của trang web cho bạn.")
-
-    except requests.RequestException as e:
-        bot.reply_to(message, f"Đã xảy ra lỗi khi tải trang web: {e}")
-
-    finally:
-        # Đảm bảo xóa file sau khi gửi
-        if os.path.exists(file_name):
-            try:
-                os.remove(file_name)
-            except Exception as e:
-                bot.reply_to(message, f"Đã xảy ra lỗi khi xóa file: {e}")
+				
 import telebot
 from telebot import types
 
@@ -940,7 +901,6 @@ import telebot
 from gtts import gTTS
 import os
 
-# Hàm xử lý lệnh /voice
 @bot.message_handler(commands=['voice'])
 def handle_voice(message):
     # Lấy văn bản từ lệnh
@@ -957,9 +917,12 @@ def handle_voice(message):
         
         # Xóa file âm thanh sau khi gửi
         os.remove(file_path)
+
+        # Trả lời người dùng với nội dung văn bản đã nhập
+        bot.reply_to(message, f"Bạn đã yêu cầu chuyển văn bản thành giọng nói: \"{text}\"")
     else:
         bot.reply_to(message, 'Vui lòng cung cấp văn bản sau lệnh /voice')
-
+				
 				
 @bot.message_handler(commands=['ad'])
 def send_admin_info(message):
@@ -1077,7 +1040,32 @@ def generate_qr(message):
 
     # Gửi ảnh mã QR cho người dùng
     bot.send_photo(message.chat.id, bio)
+
+    # Trả lời người dùng với nội dung đã yêu cầu
+    bot.reply_to(message, f"Bạn đã yêu cầu tạo mã QR cho nội dung: {text}")
 		
+# Xử lý lệnh /face
+@bot.message_handler(commands=['face'])
+def send_random_face(message):
+    # Lấy ảnh từ API
+    url = "https://thispersondoesnotexist.com"
+    try:
+        response = requests.get(url)
+        # Kiểm tra nếu phản hồi từ API thành công
+        if response.status_code == 200:
+            photo = BytesIO(response.content)
+            # Gửi ảnh lại cho người dùng
+            bot.send_photo(message.chat.id, photo)
+            # Trả lời người dùng với nội dung đã yêu cầu
+            bot.reply_to(message, "Đây là ảnh khuôn mặt ngẫu nhiên mà bạn đã yêu cầu.")
+        else:
+            # Thông báo lỗi nếu không lấy được ảnh
+            bot.reply_to(message, "Không thể lấy ảnh. Vui lòng thử lại sau.")
+    except requests.exceptions.RequestException as e:
+        # Xử lý ngoại lệ nếu có lỗi trong quá trình kết nối
+        bot.reply_to(message, "Có lỗi xảy ra khi kết nối tới server. Vui lòng thử lại sau.")
+        print(f"Error: {e}")
+				
 if __name__ == "__main__":
     bot_active = True
     bot.infinity_polling()
